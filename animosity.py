@@ -7,6 +7,7 @@ WHITE = pygame.Color(255, 255, 255)
 GRAY = pygame.Color(125, 125, 125)
 WINDOW_SIZE = (1280,720)
 
+
 class Button():
     def __init__(self, font, text, pos):
         self.text = text
@@ -19,13 +20,15 @@ class Button():
         button = self._font.render(self.text, False, self._color)
         surface.blit(button, rect)
 
-    def IsHighlighted(self):
+    def is_highlighted(self):
         return self._color == GRAY
+
 
 class Mode():
     def render(self, window):
         pass
-    def HandleEvent(self, event):
+
+    def handle_event(self, event):
         return self
 
 
@@ -35,7 +38,7 @@ class Menu(Mode):
         self.pos = pos
         self.font = font
 
-    def AddButton(self, text):
+    def add_button(self, text):
         pos = (self.pos[0], self.pos[1] + (self.font.get_height() * (len(self.buttons))))
         button = Button(self.font, text, pos)
         self.buttons.append(button)
@@ -44,28 +47,30 @@ class Menu(Mode):
         for button in self.buttons:
             button.render(window)
 
-    def GetHighlightedButton(self):
+    def get_highlighted_button(self):
         for button in self.buttons:
-            if button.IsHighlighted():
+            if button.is_highlighted():
                 return button
         return None
+
 
 class MainMenu(Menu):
     def __init__(self):
         Menu.__init__(self, (100, 100), pygame.font.Font(None, 32))
-        self.AddButton("Start new game")
-        self.AddButton("Options")
-        self.AddButton("Exit")
+        self.add_button("Start new game")
+        self.add_button("Options")
+        self.add_button("Exit")
 
-    def HandleEvent(self, event):
+    def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN:
-            button = self.GetHighlightedButton()
-            if button != None:
+            button = self.get_highlighted_button()
+            if button is not None:
                 if button.text == "Start new game":
                     return Game()
                 elif button.text == "Exit":
                     return None
         return self
+
 
 class Card():
     def __init__(self, x, y, value):
@@ -84,6 +89,7 @@ class Card():
         text_rect = pygame.Rect((self._x + self._width/(4-(self._value>9)), self._y + self._height/3), self._font.size(str(self._value)))
         surface.blit(self._font.render(str(self._value), False, self._color), text_rect)
 
+
 class Game(Mode):
     def __init__(self):
         self._card = Card(10, 20, 10)
@@ -93,26 +99,27 @@ class Game(Mode):
         self._card.render(surface)
         self._card2.render(surface)
 
+
 def run():
     pygame.init()
     window = pygame.display.set_mode(WINDOW_SIZE)
     pygame.display.set_caption("animosity")
-    fpsClock = pygame.time.Clock()
+    fps_clock = pygame.time.Clock()
 
-    mainMenu = MainMenu()
-    currentMode = mainMenu
+    main_menu = MainMenu()
+    current_mode = main_menu
 
     while True:
         window.fill(BLACK)
-        currentMode.render(window)
+        current_mode.render(window)
 
         for event in pygame.event.get():
-            currentMode = currentMode.HandleEvent(event)
-            if currentMode == None or event.type == QUIT:
+            current_mode = current_mode.HandleEvent(event)
+            if current_mode is None or event.type == QUIT:
                 pygame.quit()
                 return 0
         pygame.display.update()
-        fpsClock.tick(30)
+        fps_clock.tick(30)
 
 if __name__ == "__main__":
     sys.exit(run())
