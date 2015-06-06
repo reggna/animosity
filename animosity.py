@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import sys
 import pygame
 from pygame.locals import * # For QUIT, K_ESCAPE, &c.
