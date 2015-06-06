@@ -116,7 +116,7 @@ def run():
         current_mode.render(window)
 
         for event in pygame.event.get():
-            current_mode = current_mode.HandleEvent(event)
+            current_mode = current_mode.handle_event(event)
             if current_mode is None or event.type == QUIT:
                 pygame.quit()
                 return 0
